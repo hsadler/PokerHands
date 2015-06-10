@@ -23,6 +23,9 @@ var poker = {
     poker.suitData = getSData(hData);
     //poker.isFlush; //set in .getSuitData()
 
+    poker.straightData = poker.getStraightData(hData);
+    //poker.isStraight //set in .getStraightData()
+
     poker.highCard = getHCard(hData);
     var hCard = poker.highCard;
 
@@ -132,6 +135,17 @@ var poker = {
     } else {
       throw 'ERROR: is not flush';
     }
+  },
+  getStraightData: function(handData) {
+    var valList = poker.getValueList(handData);
+    valList = _.map(valList, function(card) {
+      return poker.getCardValue(card);
+    });
+    valList.sort();
+
+    //TODO.. stopped here...
+    console.log('');
+    console.log(valList);
   },
   getHighCard: function(handData) {
     var cVal = poker.getCardValue;
