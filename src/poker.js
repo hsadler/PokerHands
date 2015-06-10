@@ -6,40 +6,33 @@ var poker = {
     var getPData = poker.getPairData;
     var getPType = poker.getPairType;
     var messagePT = poker.messagePairType;
+    var getSData = poker.getSuitData;
 
     //get some data
     poker.handData = poker.getHandData(hand);
+
     poker.pairData = getPData(poker.handData);
+    //poker.isPair; //set in .getPairType()
     poker.pairType = getPType(poker.pairData);
 
+    poker.suitData = getSData(poker.handData);
+    //poker.isFlush; //set in .getSuitData()
+
+    //logging....
+    // console.log(poker);
     console.log(poker.handData.toString());
     // console.log(poker.pairData);
+    // console.log('is pair: ' + poker.isPair);
     // console.log(poker.pairType);
 
+    //...log more about flush here...
+
     //logic to decipher hand label
-    //refactor for no repitition, create isPair boolean...
     var pT = poker.pairType;
-    if(pT === 'Four of a kind') {
+    if(poker.isPair) {
       console.log(messagePT(pT));
       return messagePT(pT);
-    }
-    else if(pT === 'Full house') {
-      console.log(messagePT(pT));
-      return messagePT(pT);
-    }
-    else if(pT === 'Three of kind') {
-      console.log(messagePT(pT));
-      return messagePT(pT);
-    }
-    else if(pT === 'Two pair') {
-      console.log(messagePT(pT));
-      return messagePT(pT);
-    }
-    else if(pT === 'Pair') {
-      console.log(messagePT(pT));
-      return messagePT(pT);
-    }
-    else {
+    } else {
       var highCard = poker.getHighCard(poker.handData);
       return poker.messageHighCard(highCard);
     }
@@ -89,6 +82,9 @@ var poker = {
     pairData = _.map(pairData, function(data) {
       return data[0];
     });
+    poker.isPair = (function() {
+      return pairData.length < 5 ? true : false;
+    })();
     var eq = poker.arraysAreEqual;
     if(eq(pairData, [1, 1, 1, 1, 1])) return 'No pair';
     else if(eq(pairData, [1, 1, 1, 2])) return 'Pair';
@@ -106,6 +102,18 @@ var poker = {
     else {
       return poker.pairType + ' of ' + defCard1;
     }
+  },
+  getSuitList: function(handData) {
+    return _.map(handData, function(data) {
+      return data[1];
+    });
+  },
+  getSuitData: function(handData) {
+    var suitList = poker.getSuitList(handData);
+    poker.isFlush = (function() {
+      return _.uniq(suitList).length === 1 ? true : false;
+    })();
+    return suitList;
   },
   getHighCard: function(handData) {
     var cVal = poker.getCardValue;
