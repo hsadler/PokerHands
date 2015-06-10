@@ -5,36 +5,47 @@ var poker = {
     //short vars for methods
     var getPData = poker.getPairData;
     var getPType = poker.getPairType;
+    var getHCard = poker.getHighCard;
     var messagePT = poker.messagePairType;
+    var messageFT = poker.messageFlushType;
+    var messageHC = poker.messageHighCard;
     var getSData = poker.getSuitData;
 
     //get some data
     poker.handData = poker.getHandData(hand);
+    var hData = poker.handData;
 
-    poker.pairData = getPData(poker.handData);
+    poker.pairData = getPData(hData);
     //poker.isPair; //set in .getPairType()
     poker.pairType = getPType(poker.pairData);
+    var pT = poker.pairType;
 
-    poker.suitData = getSData(poker.handData);
+    poker.suitData = getSData(hData);
     //poker.isFlush; //set in .getSuitData()
+
+    poker.highCard = getHCard(hData);
+    var hCard = poker.highCard;
 
     //logging....
     // console.log(poker);
-    console.log(poker.handData.toString());
+    console.log('\n' + hData.toString());
     // console.log(poker.pairData);
-    // console.log('is pair: ' + poker.isPair);
-    // console.log(poker.pairType);
-
-    //...log more about flush here...
+    console.log('is pair: ' + poker.isPair);
+    // console.log(pT);
+    // console.log(poker.suitData);
+    console.log('is flush: ' + poker.isFlush);
+    console.log('high card: ' + hCard);
 
     //logic to decipher hand label
-    var pT = poker.pairType;
-    if(poker.isPair) {
+    if(poker.isFlush) {
+      console.log(messageFT());
+      return messageFT();
+    } else if(poker.isPair) {
       console.log(messagePT(pT));
       return messagePT(pT);
     } else {
-      var highCard = poker.getHighCard(poker.handData);
-      return poker.messageHighCard(highCard);
+      console.log(messageHC(hCard));
+      return messageHC(hCard);
     }
   },
   getHandData: function(hand) {
@@ -115,6 +126,13 @@ var poker = {
     })();
     return suitList;
   },
+  messageFlushType: function() {
+    if(poker.isFlush) {
+      return 'Flush with high card ' + poker.highCard[0];
+    } else {
+      throw 'ERROR: is not flush';
+    }
+  },
   getHighCard: function(handData) {
     var cVal = poker.getCardValue;
     return _.reduce(handData, function(memo, cardData) {
@@ -125,7 +143,6 @@ var poker = {
     }, ['2', null]);
   },
   messageHighCard: function(cardData) {
-    console.log(cardData[0] + ' High');
     return cardData[0] + ' High';
   },
 
