@@ -37,10 +37,17 @@ var poker = {
     // console.log(pT);
     // console.log(poker.suitData);
     console.log('is flush: ' + poker.isFlush);
+    console.log('is straight: ' + poker.isStraight);
     console.log('high card: ' + hCard);
 
     //logic to decipher hand label
-    if(poker.isFlush) {
+    if(poker.isStraight && poker.isFlush) {
+      console.log(poker.messageStraightFlush());
+      return poker.messageStraightFlush();
+    } else if(poker.isStraight) {
+      console.log(poker.messageStraight());
+      return poker.messageStraight();
+    } else if(poker.isFlush) {
       console.log(messageFT());
       return messageFT();
     } else if(poker.isPair) {
@@ -141,11 +148,39 @@ var poker = {
     valList = _.map(valList, function(card) {
       return poker.getCardValue(card);
     });
-    valList.sort();
+    valList.sort(function(a, b) { return a - b; });
 
-    //TODO.. stopped here...
-    console.log('');
-    console.log(valList);
+    var start = valList[0];
+    var straightComp1 = _.range(start, start + 5);
+    var straightComp2 = [0, 1, 2, 3, 12];
+    var arraysEqual = poker.arraysAreEqual;
+
+    poker.isStraight = (function() {
+      var isStraight = false;
+      if(arraysEqual(valList, straightComp1) || arraysEqual(valList, straightComp2)) {
+        isStraight = true;
+      }
+      return isStraight;
+    })();
+    poker.isBottomStraight = arraysEqual(valList, straightComp2) ? true : false;
+    poker.isTopStraight = arraysEqual(valList, [8, 9, 10, 11, 12]) ? true : false;
+  },
+  messageStraight: function() {
+    if(poker.isBottomStraight) {
+      return 'Straight up to 5';
+    } else {
+      return 'Straight up to ' + poker.highCard[0];
+    }
+  },
+  messageStraightFlush: function() {
+    if(poker.isTopStraight && poker.isFlush) {
+      return 'Royal flush';
+    } else if(poker.isBottomStraight) {
+      return 'Straight flush up to 5';
+    }
+    else {
+      return 'Straight flush up to ' + poker.highCard[0];
+    }
   },
   getHighCard: function(handData) {
     var cVal = poker.getCardValue;
